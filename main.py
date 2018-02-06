@@ -1,3 +1,5 @@
+import difflib
+import re
 from os import listdir
 from os.path import join
 
@@ -6,6 +8,13 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import cross_val_predict
 
 import scisummgen
+
+
+def simple_similarity(s1, s2):
+    s1w = re.findall('\w+', s1.lower())
+    s2w = re.findall('\w+', s2.lower())
+    return difflib.SequenceMatcher(None, s1w, s2w).ratio()
+
 
 training_path = 'scisumm-corpus/Training-Set-2017'
 
@@ -22,7 +31,7 @@ for directory in listdir(training_path):
         for sentence_id, sentence_text in paper.reference.sentence.items():
             citance_text = paper.get_citance_text(citance)
             # Compute the similarities between sentence_text and citance_text
-            similarity = 0
+            similarity = simple_similarity(sentence_text, citance_text)
             X.append([similarity])
             # Check if this sentence is also a provenance
             if sentence_id in citance['RO']:
