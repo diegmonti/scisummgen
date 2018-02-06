@@ -1,5 +1,3 @@
-import difflib
-import re
 from os import listdir
 from os.path import join
 
@@ -9,13 +7,6 @@ from sklearn.model_selection import cross_val_predict
 
 import scisummgen
 
-
-def simple_similarity(s1, s2):
-    s1w = re.findall('\w+', s1.lower())
-    s2w = re.findall('\w+', s2.lower())
-    return difflib.SequenceMatcher(None, s1w, s2w).ratio()
-
-
 training_path = 'scisumm-corpus/Training-Set-2017'
 
 X = []
@@ -24,6 +15,7 @@ y = []
 # For all the training papers
 for directory in listdir(training_path):
     paper = scisummgen.Paper(join(training_path, directory))
+    gensim = scisummgen.Gensim(paper.reference.sentence.values(), 'stopwords.txt')
 
     # For all the citances
     for citance in paper.annotation.citances:
@@ -31,8 +23,10 @@ for directory in listdir(training_path):
         for sentence_id, sentence_text in paper.reference.sentence.items():
             citance_text = paper.get_citance_text(citance)
             # Compute the similarities between sentence_text and citance_text
-            similarity = simple_similarity(sentence_text, citance_text)
-            X.append([similarity])
+            tfidf = gensim.tfidf_similarity(sentence_text, citance_text)
+            lsi = gensim.lsi_similarity(sentence_text, citance_text)
+            tokens = gensim.common_tokens(sentence_text, citance_text)
+            X.append([tfidf, lsi, tokens])
             # Check if this sentence is also a provenance
             if sentence_id in citance['RO']:
                 y.append(1)
