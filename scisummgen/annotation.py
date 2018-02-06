@@ -1,8 +1,9 @@
 class Annotation:
-    citances = []
 
     def __init__(self, path):
-        with open(path) as f:
+        self.citances = []
+
+        with open(path, encoding='utf-8') as f:
             for line in f.readlines():
                 if '|' in line:
                     self._process_line(line)
@@ -17,7 +18,7 @@ class Annotation:
             if field.startswith('Reference Article'):
                 citance['RP'] = field.split(':')[1].strip()
             if field.startswith('Citing Article'):
-                citance['CP'] = field.split(':')[1].strip()
+                citance['CP'] = field.split(':')[1].split('.')[0].strip()
             if field.startswith('Citation Offset'):
                 citance['CO'] = self._get_int_list(field.split(':')[1].strip())
             if field.startswith('Reference Offset'):
@@ -30,5 +31,5 @@ class Annotation:
         int_list = []
         text = text.strip('[]')
         for number in text.split(','):
-            int_list.append(int(number.strip('\'')))
+            int_list.append(int(number.strip(' ').strip('\'')))
         return int_list
