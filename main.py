@@ -25,9 +25,8 @@ for directory in listdir(training_path):
             # Compute the similarities between sentence_text and citance_text
             tfidf = gensim.tfidf_similarity(sentence_text, citance_text)
             lsi = gensim.lsi_similarity(sentence_text, citance_text)
-            tokens = gensim.common_tokens(sentence_text, citance_text)
             bigrams = gensim.common_bigrams(sentence_text, citance_text)
-            X.append([tfidf, lsi, tokens, bigrams])
+            X.append([tfidf, lsi, bigrams])
             # Check if this sentence is also a provenance
             if sentence_id in citance['RO']:
                 y.append(1)
@@ -35,6 +34,6 @@ for directory in listdir(training_path):
                 y.append(-1)
 
 clf = tree.DecisionTreeClassifier()
-y_prediction = cross_val_predict(clf, X, y, cv=10)
+y_prediction = cross_val_predict(clf, X, y, cv=5)
 conf_mat = confusion_matrix(y, y_prediction)
 print(conf_mat)
