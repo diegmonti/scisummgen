@@ -20,6 +20,7 @@ class Gensim:
         self.tfidf = models.TfidfModel(corpus)
         corpus_tfidf = self.tfidf[corpus]
         self.lsi = models.LsiModel(corpus_tfidf, id2word=self.dictionary, num_topics=100)
+        self.lda = models.LdaModel(corpus_tfidf, id2word=self.dictionary, num_topics=100)
 
     def tfidf_similarity(self, s1, s2):
         t1 = self.tokenize(s1)
@@ -42,6 +43,17 @@ class Gensim:
         v2_lsi = self.lsi[v2]
 
         return matutils.cossim(v1_lsi, v2_lsi)
+
+    def lda_similarity(self, s1, s2):
+        t1 = self.tokenize(s1)
+        v1 = self.dictionary.doc2bow(t1)
+        v1_lda = self.lda[v1]
+
+        t2 = self.tokenize(s2)
+        v2 = self.dictionary.doc2bow(t2)
+        v2_lda = self.lda[v2]
+
+        return matutils.hellinger(v1_lda, v2_lda)
 
     def common_tokens(self, s1, s2):
         t1 = self.tokenize(s1)

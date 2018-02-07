@@ -25,8 +25,9 @@ for directory in listdir(training_path):
             # Compute the similarities between sentence_text and citance_text
             tfidf = gensim.tfidf_similarity(sentence_text, citance_text)
             lsi = gensim.lsi_similarity(sentence_text, citance_text)
+            lda = gensim.lda_similarity(sentence_text, citance_text)
             bigrams = gensim.common_bigrams(sentence_text, citance_text)
-            X.append([tfidf, lsi, bigrams])
+            X.append([tfidf, lsi, lda, bigrams])
             # Check if this sentence is also a provenance
             if sentence_id in citance['RO']:
                 y.append(1)
