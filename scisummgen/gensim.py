@@ -50,7 +50,22 @@ class Gensim:
         return len(list(set(t1).intersection(t2)))
 
     def common_bigrams(self, s1, s2):
-        pass
+        t1 = self.tokenize(s1)
+        t2 = self.tokenize(s2)
+
+        def get_bigrams(tokens):
+            bigrams = []
+            last_token = None
+            for token in tokens:
+                if last_token is not None:
+                    bigrams.append(last_token + '_' + token)
+                last_token = token
+            return bigrams
+
+        b1 = get_bigrams(t1)
+        b2 = get_bigrams(t2)
+
+        return len(list(set(b1).intersection(b2)))
 
     def tokenize(self, string):
         raw_tokens = re.findall('\w+', string.lower())
