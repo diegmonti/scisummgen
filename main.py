@@ -15,7 +15,7 @@ y = []
 # For all the training papers
 for directory in listdir(training_path):
     paper = scisummgen.Paper(join(training_path, directory))
-    gensim = scisummgen.Gensim(paper.reference.sentence.values(), 'stopwords.txt')
+    similarity = scisummgen.Similarity(paper)
 
     # For all the citances
     for citance in paper.annotation.citances:
@@ -23,10 +23,11 @@ for directory in listdir(training_path):
         for sentence_id, sentence_text in paper.reference.sentence.items():
             citance_text = paper.get_citance_text(citance)
             # Compute the similarities between sentence_text and citance_text
-            tfidf = gensim.tfidf_similarity(sentence_text, citance_text)
-            lsi = gensim.lsi_similarity(sentence_text, citance_text)
-            bigrams = gensim.common_bigrams(sentence_text, citance_text)
-            X.append([tfidf, lsi, bigrams])
+            tfidf = similarity.tfidf_similarity(sentence_text, citance_text)
+            lsi = similarity.lsi_similarity(sentence_text, citance_text)
+            lda = similarity.lda_similarity(sentence_text, citance_text)
+            bigrams = similarity.count_bigrams(sentence_text, citance_text)
+            X.append([tfidf, lsi, lda, bigrams])
             # Check if this sentence is also a provenance
             if sentence_id in citance['RO']:
                 y.append(1)
