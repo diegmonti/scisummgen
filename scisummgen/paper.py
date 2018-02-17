@@ -24,7 +24,7 @@ class Paper:
 
         try:
             for sentence_id in citance['CO']:
-                text += self.citing[citance['CP']].sentence[sentence_id]
+                text += self.citing[citance['CP']].sentences[sentence_id]['text']
         except KeyError as e:
             print(citance)
             raise e

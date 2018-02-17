@@ -24,16 +24,16 @@ class Similarity:
     def __init__(self, list_or_paper):
         if isinstance(list_or_paper, Paper):
             paper = list_or_paper
-            string_list = list(paper.reference.sentence.values())
+            sentences = list(paper.reference.sentences.values())
             for citing in paper.citing.values():
-                for document in citing.sentence.values():
-                    string_list.append(document)
+                for sentence in citing.sentences.values():
+                    sentences.append(sentence)
         else:
-            string_list = list_or_paper
+            sentences = list_or_paper
 
         documents = []
-        for string in string_list:
-            documents.append(self.tokenize(string))
+        for sentence in sentences:
+            documents.append(self.tokenize(sentence['text']))
 
         self.dictionary = corpora.Dictionary(documents)
         corpus = [self.dictionary.doc2bow(document) for document in documents]
@@ -79,7 +79,7 @@ class Similarity:
         v2 = self.dictionary.doc2bow(t2)
         v2_lda = self.lda[v2]
 
-        return matutils.hellinger(v1_lda, v2_lda)
+        return matutils.cossim(v1_lda, v2_lda)
 
     @staticmethod
     def count_tokens(s1, s2):
