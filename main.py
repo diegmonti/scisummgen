@@ -101,7 +101,7 @@ def create_summaries(path, y_probability):
             summary += sentence['text'] + ' '
         summary = summary.strip(' ')
 
-        with open(join('summary', directory + '.scisummgen.summary.txt'), 'w', encoding='utf-8') as file:
+        with open(join('summary', directory + '.system.txt'), 'w', encoding='utf-8') as file:
             file.write(summary)
 
 
