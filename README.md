@@ -27,8 +27,14 @@ For each reference paper, for each citance, and for each sentence of the referen
 * **ssid_pos**: the position of the sentence in the local section of the reference paper;
 * **section_pos**: the position of the local section in the reference paper.
 
-Actually, the classifier is trained to predict the probability for a sentence of being a provenance given a particular citance. These probabilities are predicted and then summed considering all the citances available for a certain reference paper.
+The corpus of documents used for computing the TF-IDF similarity and the LSI similarity includes all the sentences of the reference paper and all the sentences of all its citing papers.
+
+The classifier is trained to predict the probability for a sentence of being a provenance given a particular citance. Please note that a citance, in practice, may include several sentences of the citing paper. These probabilities are predicted for each pair composed of a sentence of the reference paper and a citance of all its citing papers.
 
 ### Ranking
 
+Given all the probabilities for a sentence of the reference paper of being a provenance, computed considering the citances available, a global score for each candidate provenance is computed by summing all its probabilities. The sentences with the highest score are selected for creating the summary of the reference paper until the length of the summary exceeds 250 words. These sentences are ordered according to their original position in the reference paper.
+
 ## Results
+
+The resulting summaries are available in the `summary` directory, while the results of the evaluation are reported in the `scores.txt` file. This solution achieved a ROUGE F1-score of 20.76% when considering the *community* summaries.
